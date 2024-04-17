@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragments.playlists.CurrentPlaylistFragment"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/currentPlaylistInfoBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="155dp"
+            android:layout_height="155dp">
+
+            <ImageView
+                android:id="@+id/currentPlaylistImg"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_launcher_background" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/currentPlaylistPhotoBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:clickable="true"
+                android:foreground="@drawable/custom_fab_bg"
+                android:scaleX="0.6"
+                android:scaleY="0.6"
+                android:visibility="invisible" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="4"
+            android:orientation="vertical"
+            android:paddingLeft="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/currentPlaylistTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:fontFamily="@font/oswald"
+                    android:gravity="center_vertical|left"
+                    android:textColor="#000000"
+
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="1sp"
+                    app:autoSizeMaxTextSize="30sp"
+                    app:autoSizeStepGranularity="1sp"
+                    android:lines="1"
+                    />
+
+                <ImageView
+                    android:id="@+id/currentPlaylistSettingsBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_three_dots_vertical"
+                    app:tint="@color/black" />
+
+            </LinearLayout>
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/currentPlaylistDescription"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/lato_light_italic"
+                android:gravity="top|left"
+                android:textColor="#000000"
+
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="1sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="1sp"
+
+
+
+                />
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/project_dark_velvet"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/currentPlaylistRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/currentPlaylistRecyclerState"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:fontFamily="@font/archivo_narrow"
+        android:gravity="center"
+        android:text="Empty Playlist"
+        android:textColor="#3E3D3D"
+        android:visibility="gone"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+</LinearLayout>
+    <include layout="@layout/bottom_song_settings_layout"/>
+    <include layout="@layout/bottom_playlist_song_settings_layout"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>

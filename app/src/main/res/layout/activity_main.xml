@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/main_activity_box"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:id="@+id/slidingLayout"
+        android:gravity="bottom"
+        app:umanoPanelHeight="70dp"
+        app:umanoShadowHeight="4dp"
+        android:layout_weight="9">
+
+        <FrameLayout
+            android:id="@+id/mainFragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/slidingLayoutFrag"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include layout="@layout/fragment_player"/>
+        </FrameLayout>
+
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/mainNavBottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:visibility="gone"
+        app:menu="@menu/main_bottom_nav_menu"
+        app:itemIconTint="@drawable/custom_bottom_bar_item_selector"
+        app:itemTextColor="@drawable/custom_bottom_bar_item_selector"
+        android:background="@color/white"/>
+
+
+</LinearLayout>

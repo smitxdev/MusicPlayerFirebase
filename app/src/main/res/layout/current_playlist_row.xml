@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:id="@+id/currentPlaylistRowImage"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/img_not_found" />
+
+        <LinearLayout
+            android:id="@+id/currentPlaylistRowBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/currentPlaylistRowTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:paddingStart="5dp"
+                android:paddingTop="10dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:gravity="center_vertical"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="1sp"
+                app:autoSizeMaxTextSize="20sp"
+                app:autoSizeStepGranularity="1sp"
+                android:lines="1"
+                />
+
+            <TextView
+                android:id="@+id/currentPlaylistRowAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:paddingStart="5dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/lato_light_italic"
+                android:gravity="bottom|left"
+                android:paddingBottom="10dp"
+                android:textColor="#272727"
+                android:textSize="18sp"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="1sp"
+                app:autoSizeMaxTextSize="18sp"
+                app:autoSizeStepGranularity="1sp"
+                android:lines="1"
+                />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/currentPlaylistRowFavBtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_heart_empty" />
+
+        <ImageButton
+            android:id="@+id/currentPlaylistRowSettingsBtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_three_dots_vertical"
+            app:tint="@color/black" />
+    </LinearLayout>
+
+</RelativeLayout>

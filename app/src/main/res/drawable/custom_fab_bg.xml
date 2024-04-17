@@ -1,0 +1,19 @@
+
+<ripple android:color="?attr/colorControlHighlight"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <stroke android:width="0dp"/>
+                    <gradient
+                        android:type="linear"
+                        android:angle="90"
+                        android:startColor="@color/project_dark_velvet"
+                        android:endColor="@color/project_light_cyan" />
+                </shape>
+            </item>
+            <item android:drawable="@drawable/ic_add_cross" android:gravity="center"  />
+        </layer-list>
+    </item>
+</ripple>

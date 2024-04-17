@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragments.player.PlayerFragment"
+    android:id="@+id/player_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/miniPlayerView"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_gravity="bottom"
+            app:controller_layout_id="@layout/custom_mini_exo_player_view"
+            app:hide_on_touch="false"
+            app:show_buffering="when_playing"
+            app:shutter_background_color="@android:color/transparent"
+            app:use_artwork="false" />
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            app:controller_layout_id="@layout/custom_exo_player_view"
+            app:hide_on_touch="false"
+            app:show_buffering="when_playing"
+            app:shutter_background_color="@android:color/transparent"
+            app:use_artwork="false" />
+
+    </LinearLayout>
+    <include
+        layout="@layout/bottom_song_settings_layout"/>
+    <include
+        layout="@layout/bottom_playlist_song_player_settings_layout"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
