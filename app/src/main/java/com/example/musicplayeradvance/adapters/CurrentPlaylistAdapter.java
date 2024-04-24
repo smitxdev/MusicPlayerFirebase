@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,18 +45,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylistAdapter.MyViewHolder> {
+public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylistAdapter.MyViewHolder>implements Filterable {
     public static  Playlist playlist;
     private final MainActivity activity;
     private final ArrayList<Song> songs;
+    private ArrayList<Song> originalSongs;
+    private ArrayList<Song> filteredSongs;
     private final Integer isFavFragment;
     private final DatabaseReference database_ref = FirebaseDatabase.getInstance().getReference();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     public CurrentPlaylistAdapter(MainActivity activity, Playlist playlist, Integer isFavFragment) {
         CurrentPlaylistAdapter.playlist = playlist;
+// Initialize filteredSongs with a copy of originalSongs
         songs = playlist.getSongs();
+
+        this.originalSongs = new ArrayList<>(songs); // Initialize originalSongs with a copy of songs
+        this.filteredSongs = new ArrayList<>(songs); // Initialize filteredSongs with a copy of songs
         this.activity = activity;
         this.isFavFragment = isFavFragment;
 
@@ -78,6 +87,45 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
             }
         }
     }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                List<Song> filteredList = new ArrayList<>();
+
+                if (constraint == null || constraint.length() == 0) {
+                    // No filter implemented, return the original list
+                    filteredList.addAll(originalSongs);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+
+                    for (Song song : originalSongs) {
+                        // Implement your filtering logic here
+                        if (song.getTitle().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(song);
+                        }
+                    }
+                }
+
+                results.values = filteredList;
+                results.count = filteredList.size();
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                songs.clear();  // Clear the original list
+                songs.addAll((List<Song>) results.values);  // Update the list with filtered results
+                notifyDataSetChanged(); // Notify data set changed after filtering
+            }
+
+        };
+    }
+
+
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -246,61 +294,54 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot != null) {
-                            Song mySong = songs.get(position);
+                            int listSize = songs.size(); // Get the current size of the list
+                            if (position >= 0 && position < listSize) { // Check if position is within bounds
+                                Song mySong = songs.get(position);
 
-                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    if (ds.child("album").getValue().equals(mySong.getAlbum())
+                                            && ds.child("author").getValue().equals(mySong.getAuthor())) {
+                                        // Same album and Author now we check song title
+                                        holder.databaseReference
+                                                .child("music")
+                                                .child("albums")
+                                                .child(mySong.getAuthor())
+                                                .child(mySong.getAlbum())
+                                                .addListenerForSingleValueEvent(new ValueEventListener() {
 
-                                if (ds.child("album").getValue().equals(mySong.getAlbum())
-                                        &&
-                                        ds.child("author").getValue().equals(mySong.getAuthor())){
-                                    //Same album and Author now we check song title
-                                    holder.databaseReference
-                                            .child("music")
-                                            .child("albums")
-                                            .child(mySong.getAuthor())
-                                            .child(mySong.getAlbum())
-                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snap) {
+                                                        if (snap != null) {
+                                                            for (DataSnapshot s : snap.child("songs").getChildren()) {
+                                                                if (s.child("order").getValue().toString().trim().equals(ds.child("numberInAlbum").getValue().toString().trim()) &&
+                                                                        s.child("title").getValue().equals(mySong.getTitle())) {
+                                                                    // We found a song in Album and We need to set icon
+                                                                    holder.currentFav_btn.setImageResource(R.drawable.ic_heart_full);
 
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snap) {
-                                                    for (DataSnapshot s : snap.child("songs").getChildren()) {
-
-                                                        if (s.child("order").getValue().toString().trim().equals(ds.child("numberInAlbum").getValue().toString().trim()) &&
-                                                                s.child("title").getValue().equals(mySong.getTitle())){
-                                                            //We found a song in Album and We need to set icon
-                                                            holder.currentFav_btn.setImageResource(R.drawable.ic_heart_full);
-
-
-                                                            if(MainActivity.viewModel.getCurrentSongTitle().getValue().equals(songs.get(position).getTitle()) &&
-                                                                    MainActivity.viewModel.getCurrentSongAlbum().getValue().equals(playlist.getTitle()) &&
-                                                                    MainActivity.viewModel.getCurrentSongAuthor().getValue().equals( playlist.getDescription())) {
-
-                                                                holder.currentFav_btn.getDrawable().setTint(ContextCompat.getColor(activity,R.color.project_light_orange));
-                                                            }
-                                                            else
-                                                            {
-
-                                                                if (holder.currentFav_btn.getDrawable().getConstantState().equals(holder.currentFav_btn.getContext().getDrawable(R.drawable.ic_heart_empty).getConstantState())) {
-                                                                    holder.currentFav_btn.getDrawable().setTint(Color.BLACK);
-                                                                }
-                                                                else
-                                                                {
-                                                                    holder.currentFav_btn.getDrawable().setTint(ContextCompat.getColor(activity, R.color.project_dark_velvet));
+                                                                    if (MainActivity.viewModel.getCurrentSongTitle().getValue().equals(songs.get(position).getTitle()) &&
+                                                                            MainActivity.viewModel.getCurrentSongAlbum().getValue().equals(playlist.getTitle()) &&
+                                                                            MainActivity.viewModel.getCurrentSongAuthor().getValue().equals(playlist.getDescription())) {
+                                                                        holder.currentFav_btn.getDrawable().setTint(ContextCompat.getColor(activity, R.color.project_light_orange));
+                                                                    } else {
+                                                                        if (holder.currentFav_btn.getDrawable().getConstantState().equals(holder.currentFav_btn.getContext().getDrawable(R.drawable.ic_heart_empty).getConstantState())) {
+                                                                            holder.currentFav_btn.getDrawable().setTint(Color.BLACK);
+                                                                        } else {
+                                                                            holder.currentFav_btn.getDrawable().setTint(ContextCompat.getColor(activity, R.color.project_dark_velvet));
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
 
-                                                }
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                                }
-                                            });
+                                                    }
+                                                });
+                                    }
                                 }
                             }
-
                         }
                     }
 

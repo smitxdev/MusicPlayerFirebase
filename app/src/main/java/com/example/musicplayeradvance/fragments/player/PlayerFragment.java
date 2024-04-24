@@ -109,7 +109,7 @@ public class PlayerFragment extends Fragment {
 
     private Long seekedTo;
     private Boolean isReOpen;
-
+    boolean isShuffleEnabled = false;
     private LinearLayout playerUpperBox;
     private ImageButton settings_btn, hide_btn;
     private Playlist playlist;
@@ -144,6 +144,8 @@ public class PlayerFragment extends Fragment {
     private ImageButton mini_next_btn, mini_prev_btn;
     private DefaultTimeBar miniTimeBar;
     private boolean isFavButtonClicked = false;
+    boolean isRepeatAll = false;
+    boolean isRepeatOne = false;
     public PlayerFragment(Playlist playlist, int position, long seekedTo, Boolean isReOpen, Integer state, Boolean ready, Integer isFav, Boolean isChangingFragment,Boolean isFirstOpen) {
         this.playlist = null;
         this.playlist = playlist;
@@ -155,6 +157,7 @@ public class PlayerFragment extends Fragment {
         this.isFav = isFav;
         this.isChangingFragment= isChangingFragment;
         this.isFirstOpen=isFirstOpen;
+
 
         //We are sending playlist to this player and let it play all of it
        /*
@@ -350,47 +353,54 @@ public class PlayerFragment extends Fragment {
             }
         });
 
-        shuffleBtn.setOnClickListener(v->{
-            if (shuffleBtn.getDrawable().getConstantState().equals(shuffleBtn.getContext().getDrawable(R.drawable.ic_shuffle).getConstantState()))
-            {
-                if(playlist.getSongs().size()>1){
-                    do{
-                        randomPosition = new Random().nextInt(playlist.getSongs().size());
-                    }
-                    while (randomPosition==position);
-                }else{
-                    randomPosition=position;
-                }
 
-                mService.setShuffleEnabled(true);
-                shuffleBtn.setImageResource(R.drawable.ic_shuffle_clicked);
-            }
-            else
-            {
-                mService.setShuffleEnabled(false);
-                shuffleBtn.setImageResource(R.drawable.ic_shuffle);
-                mService.getPlayerInstance().setShuffleModeEnabled(false);
+
+        shuffleBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (!isShuffleEnabled) {
+                    // Enable shuffle
+                    isShuffleEnabled = true;
+                    shuffleBtn.setImageResource(R.drawable.ic_shuffle_clicked);
+                    mService.setShuffleEnabled(true);
+                    // Additional logic if needed
+                } else {
+                    // Disable shuffle
+                    isShuffleEnabled = false;
+                    shuffleBtn.setImageResource(R.drawable.ic_shuffle);
+                    mService.setShuffleEnabled(false);
+                    mService.getPlayerInstance().setShuffleModeEnabled(false);
+                    // Additional logic if needed
+                }
             }
         });
 
+
         repeatBtn.setOnClickListener(v -> {
-            SimpleExoPlayer player= mService.getPlayerInstance();
-            if (repeatBtn.getDrawable().getConstantState().equals(repeatBtn.getContext().getDrawable(R.drawable.ic_repeat).getConstantState()))
-            {
+            SimpleExoPlayer player = mService.getPlayerInstance();
+            if (!isRepeatAll && !isRepeatOne) {
+                // Set repeat all
                 player.setRepeatMode(Player.REPEAT_MODE_ALL);
                 mService.setRepeat(Player.REPEAT_MODE_ALL);
                 repeatBtn.setImageResource(R.drawable.ic_repeat_clicked);
-            }else if(repeatBtn.getDrawable().getConstantState().equals(repeatBtn.getContext().getDrawable(R.drawable.ic_repeat_clicked).getConstantState())){
+                isRepeatAll = true;
+            } else if (isRepeatAll) {
+                // Set repeat one
                 player.setRepeatMode(Player.REPEAT_MODE_ONE);
                 mService.setRepeat(Player.REPEAT_MODE_ONE);
                 repeatBtn.setImageResource(R.drawable.ic_repeat_one);
-            }else{
+                isRepeatAll = false;
+                isRepeatOne = true;
+            } else {
+                // Turn off repeat
                 player.setRepeatMode(Player.REPEAT_MODE_OFF);
                 mService.setRepeat(Player.REPEAT_MODE_OFF);
                 repeatBtn.setImageResource(R.drawable.ic_repeat);
+                isRepeatOne = false;
             }
-
         });
+
 
         next_btn.setOnClickListener(v -> {
             clearVideoView();

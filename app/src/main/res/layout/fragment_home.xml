@@ -14,6 +14,12 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
         android:orientation="vertical">
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:queryHint="Search Playlist"
+            android:iconifiedByDefault="false" />
 
         <RelativeLayout
             android:id="@+id/homeTopBox"
@@ -42,6 +48,7 @@
                 android:padding="10dp"
                 android:src="@drawable/ic_logout"
                 app:tint="@color/black" />
+
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView

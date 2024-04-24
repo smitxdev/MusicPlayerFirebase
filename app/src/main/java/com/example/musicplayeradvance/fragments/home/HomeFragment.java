@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,11 +21,13 @@ import com.example.musicplayeradvance.databinding.FragmentHomeBinding;
 import com.example.musicplayeradvance.fragments.login_and_register.LoginFragment;
 import com.example.musicplayeradvance.fragments.profile.ProfileFragment;
 import com.example.musicplayeradvance.models.Playlist;
+import com.example.musicplayeradvance.models.Song;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -76,9 +79,28 @@ public class HomeFragment extends Fragment {
         binding.homeProfileBtn.setOnClickListener(v -> {
             mainActivity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_up).replace(R.id.mainFragmentContainer, new ProfileFragment()).addToBackStack(null).commit();
         });
+        // Initialize RecyclerView
+//        initializeRecyclerView();
+        loadData();
+
+
+
+        SearchView searchView = view.findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterPlaylist(newText);
+                return true;
+            }
+        });
 
         if (mAuth.getCurrentUser() == null) {
-           mainActivity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_up).replace(R.id.mainFragmentContainer, new LoginFragment()).commit();
+            mainActivity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_up).replace(R.id.mainFragmentContainer, new LoginFragment()).commit();
         }
         return view;
     }
@@ -88,6 +110,61 @@ public class HomeFragment extends Fragment {
         authors = new ArrayList<>();
         playlists = new ArrayList<>();
     }
+
+
+
+
+
+
+
+
+
+    private void filterPlaylist(String query) {
+        ArrayList<Playlist> filteredList = new ArrayList<>();
+
+        for (Playlist playlist : playlists) {
+            boolean playlistAdded = false; // Flag to track if the playlist matches the query
+
+            // Check if the playlist title contains the query
+            if (playlist.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(playlist);
+                playlistAdded = true;
+            }
+
+            ArrayList<Song> songs = playlist.getSongs();
+
+            if (songs != null) {
+                // Check if any song title in the playlist contains the query
+                for (Song song : songs) {
+                    if (song.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                        // If the song title matches the query and the playlist hasn't been added yet, add the playlist
+                        if (!playlistAdded) {
+                            filteredList.add(playlist);
+                            playlistAdded = true;
+                        }
+                        break; // No need to continue checking songs in the playlist once a match is found
+                    }
+                }
+            } else {
+                Log.d("Filtered Playlist", "Songs list is null for playlist: " + playlist.getTitle());
+            }
+        }
+
+        adapter.filterList(filteredList);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void initalizeFirebaseConnection() {
         mAuth = FirebaseAuth.getInstance();
@@ -165,11 +242,16 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        initializeRecyclerView();
-        initializePlaylists();
+//        initializeRecyclerView();
+//        initializePlaylists();
 
         if (isOpenByLogin) {
+            loadData();
             mainActivity.downloadPhoto();
         }
+    }
+    private void loadData() {
+        initializeRecyclerView();
+        initializePlaylists();
     }
 }

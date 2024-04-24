@@ -128,7 +128,7 @@ public class Playlist implements Parcelable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             dest.writeBoolean(isAlbum);
         }
-
+        dest.writeList(songs); // Write the list of songs directly
         dest.writeParcelableArray(songs.toArray(new Song[0]), flags);
     }
 

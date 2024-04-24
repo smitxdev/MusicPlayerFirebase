@@ -23,6 +23,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -77,6 +79,7 @@ public class CurrentPlaylistFragment extends Fragment {
     private final Playlist playlist;
     private DatabaseReference database_ref;
     private FirebaseDatabase database;
+    RecyclerView recyclerView;
     private FirebaseAuth mAuth;
     public static CurrentPlaylistAdapter adapter;
     private final String author;
@@ -148,9 +151,38 @@ public class CurrentPlaylistFragment extends Fragment {
 
         viewModel.setMainActivity(mainActivity);
         initializeObservers();
-        return view;
+        SearchView searchView = view.findViewById(R.id.searchView);
+        recyclerView = view.findViewById(R.id.currentPlaylistRecyclerView); // Assuming your RecyclerView ID is "recyclerView" in your XML layout file
 
+
+        if (playlist.getSongs() != null) {
+            adapter = new CurrentPlaylistAdapter(mainActivity, playlist, -1);
+        } else {
+            // Handle the case when songs list is null, for example, by initializing an empty list
+            playlist.setSongs(new ArrayList<>());
+            adapter = new CurrentPlaylistAdapter(mainActivity, playlist, -1);
+        }
+
+        recyclerView.setAdapter(adapter);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("SearchQuery", "Text changed: " + newText);
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+
+        return view;
     }
+
 
     private void updateDefaultData() {
         binding.currentPlaylistTitle.setText(playlist.getTitle());

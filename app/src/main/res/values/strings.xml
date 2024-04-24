@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Altas Notas</string>
+    <string name="app_name">MuZic</string>
     <string name="facebook_app_id">459723548692352</string>
     <string name="fb_login_protocol_scheme">fb459723548692352</string>
     <string name="title_activity_intro">IntroActivity</string>

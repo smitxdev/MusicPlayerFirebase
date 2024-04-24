@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/altas_notes" />
+        app:srcCompat="@drawable/music_player" />
 
     <TextView
         android:id="@+id/introTitle"
@@ -24,9 +24,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:fontFamily="@font/oswald"
-        android:text="Altas Notas"
+        android:foregroundGravity="center"
+        android:gravity="center_horizontal"
+        android:text="Muzic\nPlay That Matchs Your Vibe "
         android:textColor="#020202"
-        android:textSize="44sp"
+        android:textSize="40sp"
         app:layout_constraintBottom_toTopOf="@+id/introLogo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -37,9 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/roboto"
-        android:text="Explore new music TODAY!"
+        android:text="Feeling are Better Expressed  With Songs"
         android:textColor="#000000"
-        android:textSize="24sp"
+        android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/introLogo" />
